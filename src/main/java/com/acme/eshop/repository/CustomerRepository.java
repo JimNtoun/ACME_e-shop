@@ -1,5 +1,6 @@
 package com.acme.eshop.repository;
 
+import com.acme.eshop.exception.BusinessException;
 import com.acme.eshop.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +14,7 @@ import java.util.Optional;
 @Slf4j
 public class CustomerRepository implements CRUDRepository<Customer,Long>{
     @Override
-    public void create(Customer customer) {
+    public void create(Customer customer) throws BusinessException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""), new String[]{"id"})) {
@@ -36,12 +37,13 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
             customer.setId(generatedKeys.getLong(1));
 
         } catch (SQLException e) {
+            throw new BusinessException("Could not create customer",e);
         }
 
     }
 
     @Override
-    public List<Customer> findAll() {
+    public List<Customer> findAll() throws BusinessException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
@@ -63,22 +65,67 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
 
             return customerList;
         } catch (SQLException e) {
+            throw new BusinessException("Could not find customer",e);
         }
-        return null;
     }
 
     @Override
-    public Optional<Customer> findByID(Long id) {
-        return Optional.empty();
+    public Optional<Customer> findByID(Long id) throws BusinessException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+
+            preparedStatement.setLong(1,id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return Optional.of(Customer.builder().id(resultSet.getLong("id")).firstName(resultSet.getString("firstName"))
+                        .lastName(resultSet.getString("lastName")).email(resultSet.getString("email"))
+                        .phone(resultSet.getString("phone")).address(resultSet.getString("address"))
+                        .city(resultSet.getString("city")).build());
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new BusinessException("Could not find customer",e);
+        }
     }
 
     @Override
-    public boolean update(Customer customer) {
-        return false;
+    public boolean update(Customer customer) throws BusinessException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+
+             preparedStatement.setLong(1,customer.getId());
+             preparedStatement.setString(2, customer.getFirstName());
+             preparedStatement.setString(3,customer.getLastName());
+             preparedStatement.setString(4, customer.getEmail());
+             preparedStatement.setString(5, customer.getPhone());
+             preparedStatement.setString(6,customer.getAddress());
+             preparedStatement.setString(7,customer.getCity());
+
+             int rowAffected = preparedStatement.executeUpdate();
+             log.trace("{} customer with id:{}",rowAffected == 1 ? "Updated" : "Failed to update", customer.getId());
+             return rowAffected == 1;
+        } catch (SQLException e) {
+            throw new BusinessException("Could not update customer",e);
+        }
     }
 
     @Override
-    public boolean delete(Customer customer) {
-        return false;
+    public boolean delete(Customer customer) throws BusinessException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+
+            preparedStatement.setLong(1,customer.getId());
+
+            int rowAffected = preparedStatement.executeUpdate();
+            log.trace("{} customer with id:{}",rowAffected == 1 ? "Deleted" : "Failed to delete", customer.getId());
+            return rowAffected == 1;
+        } catch (SQLException e) {
+            throw new BusinessException("Could not update customer",e);
+        }
     }
 }

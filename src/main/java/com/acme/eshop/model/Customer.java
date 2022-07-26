@@ -1,30 +1,42 @@
 package com.acme.eshop.model;
 
 import lombok.experimental.SuperBuilder;
+import java.util.List;
 
 @SuperBuilder
 public class Customer extends BaseModel {
     private String firstName;
     private String lastName;
-    private Category name;
     private String email;
     private String phone;
     private String address;
     private String city;
+    private List<Product> products;
 
     public Customer() {
     }
 
-    public Customer(String firstName, String lastName, Category name, String email, String phone, String address, String city) {
+    public Customer(String firstName, String lastName, String email, String phone,
+                    String address, String city, List<Product> products) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.name = name;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.city = city;
+        this.products = products;
     }
 
+    public Customer(Long id, String firstName, String lastName, String email, String phone, String address, String city, List<Product> products) {
+        super(id);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.city = city;
+        this.products = products;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -42,13 +54,6 @@ public class Customer extends BaseModel {
         this.lastName = lastName;
     }
 
-    public Category getName() {
-        return name;
-    }
-
-    public void setName(Category name) {
-        this.name = name;
-    }
 
     public String getEmail() {
         return email;
@@ -82,12 +87,20 @@ public class Customer extends BaseModel {
         this.city = city;
     }
 
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", name=" + name +
+                ", product=" + products +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +

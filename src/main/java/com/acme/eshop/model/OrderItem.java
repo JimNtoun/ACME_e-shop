@@ -7,7 +7,6 @@ public class OrderItem extends BaseModel{
     private String productCode;
     private String productName;
     private int productSize;
-
     private BigDecimal productPrice;
     public OrderItem() {
     }

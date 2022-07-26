@@ -12,7 +12,6 @@ import static java.lang.System.exit;
 public class SqlCommandRepository {
     private static final Properties sqlCommands = new Properties();
 
-    // we only want the following to happen once at the beginning
     static {
         try (InputStream inputStream = SqlCommandRepository.class.getClassLoader().getResourceAsStream(
                 "sql.properties")) {

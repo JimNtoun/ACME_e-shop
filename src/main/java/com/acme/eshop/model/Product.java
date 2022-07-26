@@ -1,7 +1,10 @@
 package com.acme.eshop.model;
 
-public class Product extends BaseModel{
+import lombok.experimental.SuperBuilder;
 
+@SuperBuilder
+
+public class Product extends BaseModel{
     private String productName;
     private String productSize;
     private int price;
@@ -10,6 +13,13 @@ public class Product extends BaseModel{
     }
 
     public Product(String productName, String productSize, int price) {
+        this.productName = productName;
+        this.productSize = productSize;
+        this.price = price;
+    }
+
+    public Product(Long id, String productName, String productSize, int price) {
+        super(id);
         this.productName = productName;
         this.productSize = productSize;
         this.price = price;

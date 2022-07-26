@@ -1,7 +1,8 @@
 package com.acme.eshop.repository;
 
-import com.acme.eshop.exception.BusinessException;
+import com.acme.eshop.exception.NotFoundException;
 import com.acme.eshop.model.Customer;
+import com.acme.eshop.model.Product;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @Slf4j
 public class CustomerRepository implements CRUDRepository<Customer,Long>{
     @Override
-    public void create(Customer customer) throws BusinessException {
+    public void create(Customer customer) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""), new String[]{"id"})) {
@@ -31,19 +32,18 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
             preparedStatement.executeUpdate();
             log.trace("Created customer {}.", customer);
 
-            // setting id
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            generatedKeys.next(); // we only suppose that there is a single generated key
+            generatedKeys.next();
             customer.setId(generatedKeys.getLong(1));
 
         } catch (SQLException e) {
-            throw new BusinessException("Could not create customer",e);
+            throw new NotFoundException("Could not create customer",e);
         }
 
     }
 
     @Override
-    public List<Customer> findAll() throws BusinessException {
+    public List<Customer> findAll() throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
@@ -65,12 +65,12 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
 
             return customerList;
         } catch (SQLException e) {
-            throw new BusinessException("Could not find customer",e);
+            throw new NotFoundException("Could not find customer",e);
         }
     }
 
     @Override
-    public Optional<Customer> findByID(Long id) throws BusinessException {
+    public Optional<Customer> findByID(Long id) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
@@ -87,12 +87,12 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
                 return Optional.empty();
             }
         } catch (SQLException e) {
-            throw new BusinessException("Could not find customer",e);
+            throw new NotFoundException("Could not find customer by ID",e);
         }
     }
 
     @Override
-    public boolean update(Customer customer) throws BusinessException {
+    public boolean update(Customer customer) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
@@ -109,12 +109,12 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
              log.trace("{} customer with id:{}",rowAffected == 1 ? "Updated" : "Failed to update", customer.getId());
              return rowAffected == 1;
         } catch (SQLException e) {
-            throw new BusinessException("Could not update customer",e);
+            throw new NotFoundException("Could not update customer",e);
         }
     }
 
     @Override
-    public boolean delete(Customer customer) throws BusinessException {
+    public boolean delete(Customer customer) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
@@ -125,7 +125,92 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
             log.trace("{} customer with id:{}",rowAffected == 1 ? "Deleted" : "Failed to delete", customer.getId());
             return rowAffected == 1;
         } catch (SQLException e) {
-            throw new BusinessException("Could not update customer",e);
+            throw new NotFoundException("Could not delete customer",e);
+        }
+    }
+
+    public void createProduct(final Customer customer, final Product product) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""), new String[]{"id"})) {
+
+            preparedStatement.setString(1, product.getProductName());
+            preparedStatement.setLong(2, customer.getId());
+            preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            product.setId(generatedKeys.getLong(1));
+
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not create product",e);
+        }
+    }
+    public List<Product> findProductsByCustomer(final Customer customer) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+
+            preparedStatement.setLong(1,customer.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Product> productList = new ArrayList<>();
+            while (resultSet.next()) {
+                Product product = Product.builder().id(resultSet.getLong("id"))
+                        .productName(resultSet.getString("productName"))
+                        .build();
+                productList.add(product);
+            }
+            return productList;
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not find products from customer",e);
+        }
+    }
+
+    public boolean deleteProduct(final Product product) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                SqlCommandRepository.get(""))) {
+
+            preparedStatement.setLong(1, product.getId());
+
+            int rowAffected = preparedStatement.executeUpdate();
+            log.trace("{} product {}.", rowAffected == 1 ? "Deleted" : "Failed to delete", product);
+            return rowAffected == 1;
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not delete product",e);
+        }
+    }
+
+    public boolean updateProduct(final Customer customer, final Product product) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+            preparedStatement.setString(1,product.getProductName());
+            preparedStatement.setLong(2, customer.getId());
+            preparedStatement.setLong(3, product.getId());
+
+            int rowAffected = preparedStatement.executeUpdate();
+            log.trace("{} product {}.", rowAffected == 1 ? "Deleted" : "Failed to delete", product);
+            return rowAffected == 1;
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not update product",e);
+        }
+    }
+
+    public boolean deleteProductsFromCustomer(Customer customer) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+
+            preparedStatement.setLong(1, customer.getId());
+
+            int rowAffected = preparedStatement.executeUpdate();
+            log.trace("{} all products with customer id {}.", rowAffected > 0 ? "Deleted" : "Failed to delete",
+                    customer.getId());
+            return rowAffected > 0;
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not delete product from customer",e);
         }
     }
 }

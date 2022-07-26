@@ -1,8 +1,7 @@
 package com.acme.eshop.model;
 
-public class Product {
+public class Product extends BaseModel{
 
-    private int id;
     private String productName;
     private String productSize;
     private int price;
@@ -10,19 +9,10 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, String productName, String productSize, int price) {
-        this.id = id;
+    public Product(String productName, String productSize, int price) {
         this.productName = productName;
         this.productSize = productSize;
         this.price = price;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getProductName() {
@@ -52,7 +42,6 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-                "id=" + id +
                 ", productName='" + productName + '\'' +
                 ", productSize='" + productSize + '\'' +
                 ", price=" + price +

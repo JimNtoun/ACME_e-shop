@@ -1,9 +1,6 @@
 package com.acme.eshop.model;
 
-import com.acme.eshop.util.DataTransferObject;
-
-public class Customer implements DataTransferObject {
-    private long id;
+public class Customer extends BaseModel {
     private String firstName;
     private String lastName;
     private Category name;
@@ -25,14 +22,6 @@ public class Customer implements DataTransferObject {
         this.city = city;
     }
 
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getFirstName() {
         return firstName;

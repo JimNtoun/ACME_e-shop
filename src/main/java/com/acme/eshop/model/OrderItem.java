@@ -2,7 +2,7 @@ package com.acme.eshop.model;
 
 import java.math.BigDecimal;
 
-public class OrderItem {
+public class OrderItem extends BaseModel{
     private int quantity;
     private String productCode;
     private String productName;

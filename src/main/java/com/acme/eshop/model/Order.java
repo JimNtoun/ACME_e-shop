@@ -1,13 +1,10 @@
 package com.acme.eshop.model;
 
-import com.acme.eshop.util.DataTransferObject;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class Order implements DataTransferObject {
-    private long id;
+public class Order extends BaseModel {
     private String customerFirstName;
     private String customerLastName;
     private String customerEmail;
@@ -21,11 +18,10 @@ public class Order implements DataTransferObject {
     public Order() {
     }
 
-    public Order(long id, String customerFirstName, String customerLastName,
+    public Order(String customerFirstName, String customerLastName,
                  String customerEmail, String salespersonFirstName, String salespersonLastName,
                  String salespersonEmail, String status, BigDecimal cost,
                  Date creationDate, List<OrderItem> orderItems) {
-        this.id = id;
         this.customerFirstName = customerFirstName;
         this.customerLastName = customerLastName;
         this.customerEmail = customerEmail;
@@ -36,15 +32,6 @@ public class Order implements DataTransferObject {
         this.cost = cost;
         this.creationDate = creationDate;
         this.orderItems = orderItems;
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getCustomerFirstName() {
@@ -130,7 +117,6 @@ public class Order implements DataTransferObject {
     @Override
     public String toString() {
         return "Order{" +
-                "id=" + id +
                 ", customerFirstName='" + customerFirstName + '\'' +
                 ", customerLastName='" + customerLastName + '\'' +
                 ", customerEmail='" + customerEmail + '\'' +

@@ -1,7 +1,6 @@
 package com.acme.eshop.model;
 
 import lombok.experimental.SuperBuilder;
-import java.util.List;
 
 @SuperBuilder
 public class Customer extends BaseModel {
@@ -11,23 +10,22 @@ public class Customer extends BaseModel {
     private String phone;
     private String address;
     private String city;
-    private List<Product> products;
+    private Category category;
 
     public Customer() {
     }
 
-    public Customer(String firstName, String lastName, String email, String phone,
-                    String address, String city, List<Product> products) {
+    public Customer(String firstName, String lastName, String email, String phone, String address, String city, Category category) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.city = city;
-        this.products = products;
+        this.category = category;
     }
 
-    public Customer(Long id, String firstName, String lastName, String email, String phone, String address, String city, List<Product> products) {
+    public Customer(Long id, String firstName, String lastName, String email, String phone, String address, String city, Category category) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -35,7 +33,7 @@ public class Customer extends BaseModel {
         this.phone = phone;
         this.address = address;
         this.city = city;
-        this.products = products;
+        this.category = category;
     }
 
     public String getFirstName() {
@@ -87,12 +85,12 @@ public class Customer extends BaseModel {
         this.city = city;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override
@@ -100,7 +98,7 @@ public class Customer extends BaseModel {
         return "Customer{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", product=" + products +
+                ", category=" + category +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +

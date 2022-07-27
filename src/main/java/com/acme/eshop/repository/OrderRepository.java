@@ -2,7 +2,6 @@ package com.acme.eshop.repository;
 
 import com.acme.eshop.exception.NotFoundException;
 import com.acme.eshop.model.Order;
-import com.acme.eshop.model.OrderItem;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -151,4 +150,18 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     }
 
 
+    public boolean findOrderItemByOrder(final Order order) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+
+            preparedStatement.setLong(1,order.getId());
+
+            int rowAffected = preparedStatement.executeUpdate();
+            log.trace("{} order with id:{}",rowAffected == 1 ? "Deleted" : "Failed to delete", order.getId());
+            return rowAffected == 1;
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not update order",e);
+        }
+    }
 }

@@ -2,7 +2,7 @@ package com.acme.eshop.repository;
 
 import com.acme.eshop.exception.NotFoundException;
 import com.acme.eshop.model.Customer;
-import com.acme.eshop.model.Product;
+import com.acme.eshop.model.Category;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @Slf4j
 public class CustomerRepository implements CRUDRepository<Customer,Long>{
     @Override
-    public void create(Customer customer) throws NotFoundException {
+    public void create(Customer customer, Category category) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""), new String[]{"id"})) {
@@ -27,6 +27,7 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
             preparedStatement.setString(5, customer.getPhone());
             preparedStatement.setString(6, customer.getAddress());
             preparedStatement.setString(7, customer.getCity());
+            preparedStatement.setString(8, category.getName());
 
 
             preparedStatement.executeUpdate();
@@ -129,88 +130,5 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
         }
     }
 
-    public void createProduct(final Customer customer, final Product product) throws NotFoundException {
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""), new String[]{"id"})) {
 
-            preparedStatement.setString(1, product.getProductName());
-            preparedStatement.setLong(2, customer.getId());
-            preparedStatement.executeUpdate();
-
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            generatedKeys.next();
-            product.setId(generatedKeys.getLong(1));
-
-        } catch (SQLException e) {
-            throw new NotFoundException("Could not create product",e);
-        }
-    }
-    public List<Product> findProductsByCustomer(final Customer customer) throws NotFoundException {
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
-
-            preparedStatement.setLong(1,customer.getId());
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            List<Product> productList = new ArrayList<>();
-            while (resultSet.next()) {
-                Product product = Product.builder().id(resultSet.getLong("id"))
-                        .productName(resultSet.getString("productName"))
-                        .build();
-                productList.add(product);
-            }
-            return productList;
-        } catch (SQLException e) {
-            throw new NotFoundException("Could not find products from customer",e);
-        }
-    }
-
-    public boolean deleteProduct(final Product product) throws NotFoundException {
-        try (Connection connection = DataSource.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(
-                SqlCommandRepository.get(""))) {
-
-            preparedStatement.setLong(1, product.getId());
-
-            int rowAffected = preparedStatement.executeUpdate();
-            log.trace("{} product {}.", rowAffected == 1 ? "Deleted" : "Failed to delete", product);
-            return rowAffected == 1;
-        } catch (SQLException e) {
-            throw new NotFoundException("Could not delete product",e);
-        }
-    }
-
-    public boolean updateProduct(final Customer customer, final Product product) throws NotFoundException {
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
-            preparedStatement.setString(1,product.getProductName());
-            preparedStatement.setLong(2, customer.getId());
-            preparedStatement.setLong(3, product.getId());
-
-            int rowAffected = preparedStatement.executeUpdate();
-            log.trace("{} product {}.", rowAffected == 1 ? "Deleted" : "Failed to delete", product);
-            return rowAffected == 1;
-        } catch (SQLException e) {
-            throw new NotFoundException("Could not update product",e);
-        }
-    }
-
-    public boolean deleteProductsFromCustomer(Customer customer) throws NotFoundException {
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
-
-            preparedStatement.setLong(1, customer.getId());
-
-            int rowAffected = preparedStatement.executeUpdate();
-            log.trace("{} all products with customer id {}.", rowAffected > 0 ? "Deleted" : "Failed to delete",
-                    customer.getId());
-            return rowAffected > 0;
-        } catch (SQLException e) {
-            throw new NotFoundException("Could not delete product from customer",e);
-        }
-    }
 }

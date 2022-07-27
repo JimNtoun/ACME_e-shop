@@ -1,4 +1,4 @@
 package com.acme.eshop.service;
 
-public class QueryService {
+public class ReportService {
 }

@@ -1,9 +1,12 @@
 package com.acme.eshop.model;
 
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+@SuperBuilder
 public class Order extends BaseModel {
     private String customerFirstName;
     private String customerLastName;

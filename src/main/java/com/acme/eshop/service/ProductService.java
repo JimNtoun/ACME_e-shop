@@ -13,6 +13,9 @@ import java.util.Optional;
 public class ProductService implements CRUDService<Product, Long>{
     ProductRepository productRepository;
 
+    public ProductService(ProductRepository productRepository) {
+    }
+
     @Override
     public void create(Product product) throws NotFoundException {
         log.debug("Creating product.");

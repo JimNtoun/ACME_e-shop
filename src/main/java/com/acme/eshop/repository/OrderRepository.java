@@ -32,7 +32,6 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
             preparedStatement.setString(7, order.getSalespersonLastName());
             preparedStatement.setString(8, order.getStatus());
             preparedStatement.setBigDecimal(9, order.getCost());
-            preparedStatement.setDate(10, new Date(order.getCreationDate().getTime()));
             //preparedStatement.setOrderItems(11, order.getOrderItems());
 
             preparedStatement.executeUpdate();
@@ -64,8 +63,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
                         .salespersonFirstName(resultSet.getString("salespersonfirstname"))
                         .salespersonLastName(resultSet.getString("salespersonlastname"))
                         .cost(resultSet.getBigDecimal("cost"))
-                        .status(resultSet.getString("status"))
-                        .creationDate(resultSet.getDate("Date")).build();
+                        .status(resultSet.getString("status")).build();
                 orderList.add(order);
             }
             return orderList;
@@ -90,8 +88,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
                         .salespersonEmail(resultSet.getString("salesPersonEmail")).salespersonFirstName(resultSet.getString("salesPersonFirstname"))
                         .salespersonLastName(resultSet.getString("salesPersonLastname"))
                         .status(resultSet.getString("status"))
-                        .cost(resultSet.getBigDecimal("cost"))
-                        .creationDate(resultSet.getDate("creationDate")).build());
+                        .cost(resultSet.getBigDecimal("cost")).build());
             } else {
                 return Optional.empty();
             }
@@ -114,7 +111,6 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
             preparedStatement.setString(5, order.getSalespersonFirstName());
             preparedStatement.setString(6,order.getSalespersonLastName());
             preparedStatement.setString(7,order.getStatus());
-            preparedStatement.setDate(8, (Date) order.getCreationDate());
             preparedStatement.setBigDecimal(9,order.getCost());
 
             int rowAffected = preparedStatement.executeUpdate();

@@ -16,7 +16,6 @@ public class Order extends BaseModel {
     private String salespersonEmail;
     private String status;
     private BigDecimal cost;
-    private Date creationDate;
     private List<OrderItem> orderItems;
     public Order() {
     }
@@ -33,7 +32,6 @@ public class Order extends BaseModel {
         this.salespersonEmail = salespersonEmail;
         this.status = status;
         this.cost = cost;
-        this.creationDate = creationDate;
         this.orderItems = orderItems;
     }
 
@@ -101,14 +99,6 @@ public class Order extends BaseModel {
         this.cost = cost;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
     public List<OrderItem> getOrderItems() {
         return orderItems;
     }
@@ -128,7 +118,6 @@ public class Order extends BaseModel {
                 ", salespersonEmail='" + salespersonEmail + '\'' +
                 ", status='" + status + '\'' +
                 ", cost=" + cost +
-                ", creationDate=" + creationDate +
                 '}';
     }
 }

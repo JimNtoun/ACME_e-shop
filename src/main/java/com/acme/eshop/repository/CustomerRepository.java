@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Optional;
 @Slf4j
 public class CustomerRepository implements CRUDRepository<Customer,Long>{
+
     @Override
-    public void create(Customer customer, Category category) throws NotFoundException {
+    public void create(final Customer customer) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""), new String[]{"id"})) {
@@ -27,7 +28,6 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
             preparedStatement.setString(5, customer.getPhone());
             preparedStatement.setString(6, customer.getAddress());
             preparedStatement.setString(7, customer.getCity());
-            preparedStatement.setString(8, category.getName());
 
 
             preparedStatement.executeUpdate();
@@ -40,8 +40,29 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
         } catch (SQLException e) {
             throw new NotFoundException("Could not create customer",e);
         }
-
     }
+
+    public void create(Customer customer, Category category) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""), new String[]{"id"})) {
+
+            preparedStatement.setString(1, category.getName());
+            preparedStatement.setLong(2, customer.getId());
+
+            preparedStatement.executeUpdate();
+            log.trace("Created customer category {}.", category);
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            customer.setId(generatedKeys.getLong(1));
+
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not create category",e);
+        }
+    }
+
+
 
     @Override
     public List<Customer> findAll() throws NotFoundException {
@@ -53,15 +74,12 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
 
             List<Customer> customerList = new ArrayList<>();
             while (resultSet.next()) {
-                Customer customer = new Customer();
-                        customer.setId(resultSet.getLong("id"));
-                        customer.setFirstName(resultSet.getString("firstName"));
-                        customer.setLastName(resultSet.getString("lastName"));
-                        customer.setEmail(resultSet.getString("email"));
-                        customer.setPhone(resultSet.getString("phone"));
-                        customer.setAddress(resultSet.getString("address"));
-                        customer.setCity(resultSet.getString("city"));
-                        customerList.add(customer);
+                Customer customer = Customer.builder().id(resultSet.getLong("id"))
+                        .firstName(resultSet.getString("firstName"))
+                        .lastName(resultSet.getString("lastName")).email(resultSet.getString("email"))
+                        .phone(resultSet.getString("phone")).address(resultSet.getString("address"))
+                        .city(resultSet.getString("city")).build();
+                customerList.add(customer);
             }
 
             return customerList;
@@ -129,6 +147,4 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
             throw new NotFoundException("Could not delete customer",e);
         }
     }
-
-
 }

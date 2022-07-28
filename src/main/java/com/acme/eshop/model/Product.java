@@ -2,23 +2,24 @@ package com.acme.eshop.model;
 
 import lombok.experimental.SuperBuilder;
 
-@SuperBuilder
+import java.math.BigDecimal;
 
+@SuperBuilder
 public class Product extends BaseModel{
     private String productName;
     private String productSize;
-    private int price;
+    private BigDecimal price;
 
     public Product() {
     }
 
-    public Product(String productName, String productSize, int price) {
+    public Product(String productName, String productSize, BigDecimal price) {
         this.productName = productName;
         this.productSize = productSize;
         this.price = price;
     }
 
-    public Product(Long id, String productName, String productSize, int price) {
+    public Product(Long id, String productName, String productSize, BigDecimal price) {
         super(id);
         this.productName = productName;
         this.productSize = productSize;
@@ -41,11 +42,11 @@ public class Product extends BaseModel{
         this.productSize = productSize;
     }
 
-    public int getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

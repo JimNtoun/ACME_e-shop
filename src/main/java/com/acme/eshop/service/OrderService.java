@@ -13,6 +13,10 @@ import java.util.Optional;
 public class OrderService implements CRUDService<Order, Long> {
     private final OrderRepository orderRepository;
 
+    public OrderService(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
+
     @Override
     public void create(Order order) throws NotFoundException {
         log.debug("Create Order");
@@ -40,11 +44,50 @@ public class OrderService implements CRUDService<Order, Long> {
             isUpdated = orderRepository.update(order);
             if(isUpdated) {
                 List<OrderItem> previousOrderItems = findOrderItemByOrder(order);
+                previousOrderItems.removeAll(order.getOrderItems());
+                for(OrderItem orderItemToDelete : previousOrderItems) {
+                    deleteOrderItem(orderItemToDelete);
+                }
+                for(OrderItem orderItem : order.getOrderItems()) {
+                    createOrUpdateOrderItem(order, orderItem);
+                }
             }
+        }
+        return isUpdated;
+    }
+
+    private void createOrUpdateOrderItem(Order order, OrderItem orderItem) throws NotFoundException {
+        boolean isUpdated = false;
+        if (orderItem.getId() != null && orderItem.getId() >= 0) {
+            isUpdated = updateOrderItem(order, orderItem);
+        }
+        if (!isUpdated) {
+            createOrderItem(order, orderItem);
         }
     }
 
-    private List<OrderItem> findOrderItemByOrder(Order order) {
+    private void createOrderItem(Order order, OrderItem orderItem) throws NotFoundException {
+        log.debug("Create orderItem.");
+        orderRepository.createOrderItem(order, orderItem);
+    }
+
+    private boolean updateOrderItem(Order order, OrderItem orderItem) throws NotFoundException {
+        log.debug("Delete orderItem.");
+        deleteOrderItemFromOrder(order);
+        return orderRepository.delete(order);
+    }
+
+    private boolean deleteOrderItemFromOrder(Order order) throws NotFoundException {
+        log.debug("Deleting enrollments by student.");
+        return orderRepository.deleteOrderItemFromOrder(order);
+    }
+
+    private boolean deleteOrderItem(final OrderItem orderItem) throws NotFoundException{
+        log.debug("Delete orderItem.");
+        return orderRepository.deleteOrderItem(orderItem);
+    }
+
+    private List<OrderItem> findOrderItemByOrder(final Order order) throws NotFoundException {
         log.debug("Find orderItem by order");
         return orderRepository.findOrderItemByOrder(order);
     }

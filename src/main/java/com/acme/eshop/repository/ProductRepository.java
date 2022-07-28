@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +34,46 @@ public class ProductRepository implements CRUDRepository<Product, Long>{
 
     @Override
     public List<Product> findAll() throws NotFoundException {
-        return null;
-    }
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""), new String[]{"id"})) {
 
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<Product> productList = new ArrayList<>();
+            while (resultSet.next()) {
+                Product product = Product.builder().id(resultSet.getLong("id"))
+                        .productName(resultSet.getString("productName"))
+                        .productSize(resultSet.getString("productSize"))
+                        .price(resultSet.getBigDecimal("price")).build();
+                productList.add(product);
+            }
+
+            return productList;
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not find all products", e);
+        }
+    }
     @Override
     public Optional<Product> findByID(Long id) throws NotFoundException {
-        return Optional.empty();
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+
+            preparedStatement.setLong(1,id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return Optional.of(Product.builder().id(resultSet.getLong("id"))
+                        .productName(resultSet.getString("productName"))
+                        .productSize(resultSet.getString("productSize"))
+                        .price(resultSet.getBigDecimal("price")).build());
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not find product by ID",e);
+        }
     }
 
     @Override
@@ -46,6 +81,7 @@ public class ProductRepository implements CRUDRepository<Product, Long>{
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
+
             preparedStatement.setString(1,product.getProductName());
             preparedStatement.setLong(2, product.getId());
 

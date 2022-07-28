@@ -2,6 +2,7 @@ package com.acme.eshop.repository;
 
 import com.acme.eshop.exception.NotFoundException;
 import com.acme.eshop.model.Order;
+import com.acme.eshop.model.OrderItem;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -44,10 +45,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
         } catch (SQLException e) {
             throw new NotFoundException("Could not create order",e);
         }
-
     }
-
-
     @Override
     public List<Order> findAll() throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
@@ -58,20 +56,18 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
 
             List<Order> orderList = new ArrayList<>();
             while (resultSet.next()) {
-                Order order = new Order();
-                order.setId(resultSet.getLong("id"));
-                order.setCustomerFirstName(resultSet.getString("customerfirstName"));
-                order.setCustomerLastName(resultSet.getString("customerlastName"));
-                order.setCustomerEmail(resultSet.getString("customeremail"));
-                order.setSalespersonEmail(resultSet.getString("salespersonEmail"));
-                order.setSalespersonFirstName(resultSet.getString("salespersonfirstname"));
-                order.setSalespersonLastName(resultSet.getString("salespersonlastname"));
-                order.setCost(resultSet.getBigDecimal("cost"));
-                order.setStatus(resultSet.getString("status"));
-                order.setCreationDate(resultSet.getDate("Date"));
+                Order order = Order.builder().id(resultSet.getLong("id"))
+                        .customerFirstName(resultSet.getString("customerfirstName"))
+                        .customerLastName(resultSet.getString("customerlastName"))
+                        .customerEmail(resultSet.getString("customeremail"))
+                        .salespersonEmail(resultSet.getString("salespersonEmail"))
+                        .salespersonFirstName(resultSet.getString("salespersonfirstname"))
+                        .salespersonLastName(resultSet.getString("salespersonlastname"))
+                        .cost(resultSet.getBigDecimal("cost"))
+                        .status(resultSet.getString("status"))
+                        .creationDate(resultSet.getDate("Date")).build();
                 orderList.add(order);
             }
-
             return orderList;
         } catch (SQLException e) {
             throw new NotFoundException("Could not find order",e);
@@ -99,13 +95,9 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
             } else {
                 return Optional.empty();
             }
-        }
-
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new NotFoundException("Could not find order by ID",e);
         }
-
-
     }
 
 
@@ -150,18 +142,85 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     }
 
 
-    public boolean findOrderItemByOrder(final Order order) throws NotFoundException {
+    public List<OrderItem> findOrderItemByOrder(final Order order) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
                      SqlCommandRepository.get(""))) {
 
             preparedStatement.setLong(1,order.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<OrderItem> orderItemList = new ArrayList<>();
+            while (resultSet.next()) {
+                OrderItem orderItem = OrderItem.builder().id(resultSet.getLong("id"))
+                        .productCode(resultSet.getString("productCode"))
+                        .productName(resultSet.getString("productName"))
+                        .productSize(resultSet.getInt("productSize"))
+                        .productPrice(resultSet.getBigDecimal("productPrice"))
+                        .quantity(resultSet.getInt("quantity")).build();
+                orderItemList.add(orderItem);
+            }
+
+            return orderItemList;
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not update orderItem",e);
+        }
+    }
+
+    public boolean deleteOrderItem(final OrderItem orderItem) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""))) {
+
+            preparedStatement.setLong(1, orderItem.getId());
 
             int rowAffected = preparedStatement.executeUpdate();
-            log.trace("{} order with id:{}",rowAffected == 1 ? "Deleted" : "Failed to delete", order.getId());
+            log.trace("{} orderItem {}.", rowAffected == 1 ? "Deleted" : "Failed to delete", orderItem);
             return rowAffected == 1;
         } catch (SQLException e) {
-            throw new NotFoundException("Could not update order",e);
+            throw new NotFoundException("Could not delete orderItem.", e);
+        }
+    }
+
+    public void createOrderItem(Order order, OrderItem orderItem) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get(""), new String[]{"id"})) {
+
+            preparedStatement.setLong(1, orderItem.getId());
+            preparedStatement.setInt(2, orderItem.getQuantity());
+            preparedStatement.setString(3, orderItem.getProductCode());
+            preparedStatement.setString(3, orderItem.getProductName());
+            preparedStatement.setInt(3, orderItem.getProductSize());
+            preparedStatement.setBigDecimal(3, orderItem.getProductPrice());
+
+
+
+            preparedStatement.executeUpdate();
+            log.debug("Created enrollment {} with student id {}.", orderItem, order.getId());
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next(); // we only suppose that there is a single generated key
+            orderItem.setId(generatedKeys.getLong(1));
+
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not create orderItem.", e);
+        }
+    }
+
+    public boolean deleteOrderItemFromOrder(Order order) throws NotFoundException {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     SqlCommandRepository.get("delete.table.enrollment.001"))) {
+
+            preparedStatement.setLong(1, order.getId());
+
+            int rowAffected = preparedStatement.executeUpdate();
+            log.trace("{} all orderItems for order id:{}.", rowAffected > 0 ? "Deleted" : "Failed to delete",
+                    order.getId());
+            return rowAffected > 0;
+        } catch (SQLException e) {
+            throw new NotFoundException("Could not delete orderItem(s) by order.", e);
         }
     }
 }

@@ -1,7 +1,10 @@
 package com.acme.eshop.model;
 
+import lombok.experimental.SuperBuilder;
+
 import java.math.BigDecimal;
 
+@SuperBuilder
 public class OrderItem extends BaseModel{
     private int quantity;
     private String productCode;

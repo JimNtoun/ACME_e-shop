@@ -2,6 +2,8 @@ package com.acme.eshop.repository;
 
 import com.acme.eshop.exception.NotFoundException;
 import com.acme.eshop.model.BaseModel;
+import com.acme.eshop.model.Category;
+import com.acme.eshop.model.Customer;
 
 import java.util.List;
 import java.util.Optional;

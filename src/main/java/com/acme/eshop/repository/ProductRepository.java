@@ -18,7 +18,7 @@ public class ProductRepository implements CRUDRepository<Product, Long>{
     public void create(Product product) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""), new String[]{"id"})) {
+                     SqlCommandRepository.get("insert.table.product.000"), new String[]{"id"})) {
 
             preparedStatement.setString(1, product.getProductName());
             preparedStatement.executeUpdate();
@@ -36,7 +36,7 @@ public class ProductRepository implements CRUDRepository<Product, Long>{
     public List<Product> findAll() throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""), new String[]{"id"})) {
+                     SqlCommandRepository.get("select.table.product.000"), new String[]{"id"})) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -58,7 +58,7 @@ public class ProductRepository implements CRUDRepository<Product, Long>{
     public Optional<Product> findByID(Long id) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("select.table.product.001"))) {
 
             preparedStatement.setLong(1,id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -80,7 +80,7 @@ public class ProductRepository implements CRUDRepository<Product, Long>{
     public boolean update(Product product) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("update.table.product.000"))) {
 
             preparedStatement.setString(1,product.getProductName());
             preparedStatement.setLong(2, product.getId());
@@ -96,7 +96,7 @@ public class ProductRepository implements CRUDRepository<Product, Long>{
     public boolean delete(Product product) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("delete.table.product.000"))) {
 
             preparedStatement.setLong(1, product.getId());
 

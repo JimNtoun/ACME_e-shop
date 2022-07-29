@@ -2,7 +2,6 @@ package com.acme.eshop.repository;
 
 import com.acme.eshop.exception.NotFoundException;
 import com.acme.eshop.model.Customer;
-import com.acme.eshop.model.Category;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -19,7 +18,7 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
     public void create(final Customer customer) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""), new String[]{"id"})) {
+                     SqlCommandRepository.get("insert.table.customer.000"), new String[]{"id"})) {
 
             preparedStatement.setLong(1, customer.getId());
             preparedStatement.setString(2, customer.getFirstName());
@@ -42,33 +41,12 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
         }
     }
 
-    public void create(Customer customer, Category category) throws NotFoundException {
-        try (Connection connection = DataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""), new String[]{"id"})) {
-
-            preparedStatement.setString(1, category.getName());
-            preparedStatement.setLong(2, customer.getId());
-
-            preparedStatement.executeUpdate();
-            log.trace("Created customer category {}.", category);
-
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-            generatedKeys.next();
-            customer.setId(generatedKeys.getLong(1));
-
-        } catch (SQLException e) {
-            throw new NotFoundException("Could not create category",e);
-        }
-    }
-
-
 
     @Override
     public List<Customer> findAll() throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("select.table.customer.000"))) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -92,7 +70,7 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
     public Optional<Customer> findByID(Long id) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("select.table.customer.001"))) {
 
             preparedStatement.setLong(1,id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -114,7 +92,7 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
     public boolean update(Customer customer) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("update.table.customer.000"))) {
 
              preparedStatement.setLong(1,customer.getId());
              preparedStatement.setString(2, customer.getFirstName());
@@ -136,7 +114,7 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
     public boolean delete(Customer customer) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("delete.table.customer.000"))) {
 
             preparedStatement.setLong(1,customer.getId());
 

@@ -79,12 +79,12 @@ public class ACMEEshopApplication {
     private List<Customer> customerCreation() {
 
         List<Customer> customers = List.of(
-                Customer.builder().firstName("George").lastName("Pappas").email("gdsfsz").phone("fdfxzd").address("fdcfd").city("fdfdf").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").build());
+                Customer.builder().firstName("George").lastName("Pappas").email("gdsfsz").phone("fdfxzd").address("fdcfd").city("fdfdf").category("B2C").build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2G").build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2B").build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2C").build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2G").build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2B").build());
         for (final Customer customer : customers) {
             log.trace("{}", customer);
         }
@@ -159,7 +159,7 @@ public class ACMEEshopApplication {
 
     private List<Order> orderCreation(List<OrderItem> orderItems) {
         List<Order> orders = List.of(
-                Order.builder().customerFirstName("").customerLastName("").customerEmail("").salespersonFirstName("")
+                Order.builder().customerFirstName("GGG").customerLastName("GGG").customerEmail("GGG").salespersonFirstName("")
                         .salespersonLastName("").salespersonEmail("").status("").cost(BigDecimal.valueOf(1500))
                         .orderItems(new ArrayList<>(orderItems.subList(0, 3))).build(),
                 Order.builder().customerFirstName("").customerLastName("").customerEmail("").salespersonFirstName("")
@@ -201,16 +201,14 @@ public class ACMEEshopApplication {
         List.of(SqlCommandRepository.get("create.table.customer"),
                 SqlCommandRepository.get("create.table.order"),
                 SqlCommandRepository.get("create.table.orderItem"),
-                SqlCommandRepository.get("create.table.product"),
-                SqlCommandRepository.get("create.table.category")).forEach(c-> runTableCommands(c, false));
+                SqlCommandRepository.get("create.table.product")).forEach(c-> runTableCommands(c, false));
     }
 
     private void dropExistingTables() {
         List.of(SqlCommandRepository.get("drop.table.customer"),
                 SqlCommandRepository.get("drop.table.order"),
                 SqlCommandRepository.get("drop.table.orderItem"),
-                SqlCommandRepository.get("drop.table.product"),
-                SqlCommandRepository.get("drop.table.category")).forEach(c-> runTableCommands(c, true));
+                SqlCommandRepository.get("drop.table.product")).forEach(c-> runTableCommands(c, true));
     }
 
     private void runTableCommands(String command, boolean drop) {

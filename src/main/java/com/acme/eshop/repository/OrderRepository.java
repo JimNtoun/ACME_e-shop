@@ -21,7 +21,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     public void create(Order order) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""), new String[]{"id"})) {
+                     SqlCommandRepository.get("insert.table.order.000"), new String[]{"id"})) {
 
             preparedStatement.setLong(1, order.getId());
             preparedStatement.setString(2, order.getCustomerFirstName());
@@ -49,7 +49,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     public List<Order> findAll() throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("select.table.order.000"))) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -77,7 +77,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     public Optional<Order> findByID(Long id) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("select.table.order.001"))) {
 
             preparedStatement.setLong(1,id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -102,7 +102,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     public boolean update(Order order) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("update.table.order.000"))) {
 
             preparedStatement.setLong(1,order.getId());
             preparedStatement.setString(2, order.getCustomerFirstName());
@@ -125,7 +125,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     public boolean delete(Order order) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("delete.table.order.000"))) {
 
             preparedStatement.setLong(1,order.getId());
 
@@ -141,7 +141,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     public List<OrderItem> findOrderItemByOrder(final Order order) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("select.table.orderItem.002"))) {
 
             preparedStatement.setLong(1,order.getId());
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -166,7 +166,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     public boolean deleteOrderItem(final OrderItem orderItem) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""))) {
+                     SqlCommandRepository.get("delete.table.orderItem.000"))) {
 
             preparedStatement.setLong(1, orderItem.getId());
 
@@ -181,7 +181,7 @@ public class OrderRepository implements CRUDRepository<Order,Long>{
     public void createOrderItem(Order order, OrderItem orderItem) throws NotFoundException {
         try (Connection connection = DataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(
-                     SqlCommandRepository.get(""), new String[]{"id"})) {
+                     SqlCommandRepository.get("insert.table.orderItem.000"), new String[]{"id"})) {
 
             preparedStatement.setLong(1, orderItem.getId());
             preparedStatement.setInt(2, orderItem.getQuantity());

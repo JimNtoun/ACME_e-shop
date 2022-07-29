@@ -10,12 +10,12 @@ public class Customer extends BaseModel {
     private String phone;
     private String address;
     private String city;
-    private Category category;
+    private String category;
 
     public Customer() {
     }
 
-    public Customer(String firstName, String lastName, String email, String phone, String address, String city, Category category) {
+    public Customer(String firstName, String lastName, String email, String phone, String address, String city, String category) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -25,7 +25,7 @@ public class Customer extends BaseModel {
         this.category = category;
     }
 
-    public Customer(Long id, String firstName, String lastName, String email, String phone, String address, String city, Category category) {
+    public Customer(Long id, String firstName, String lastName, String email, String phone, String address, String city, String category) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -85,11 +85,15 @@ public class Customer extends BaseModel {
         this.city = city;
     }
 
-    public Category getCategory() {
-        return category;
+    public String getCategory() {
+        if(category == "B2C" || category == "B2B" || category == "B2G"){
+            return category;
+        }else {
+            return "Error: wrong category";
+        }
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

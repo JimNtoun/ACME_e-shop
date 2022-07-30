@@ -9,17 +9,20 @@ public class OrderItem extends BaseModel{
     private int quantity;
     private String productCode;
     private String productName;
-    private int productSize;
     private BigDecimal productPrice;
     public OrderItem() {
     }
-
-    public OrderItem(int quantity, String productCode, String productName,
-                     int productSize, BigDecimal productPrice) {
+    public OrderItem(int quantity, String productCode, String productName, BigDecimal productPrice) {
         this.quantity = quantity;
         this.productCode = productCode;
         this.productName = productName;
-        this.productSize = productSize;
+        this.productPrice = productPrice;
+    }
+    public OrderItem(Long id, int quantity, String productCode, String productName, BigDecimal productPrice) {
+        super(id);
+        this.quantity = quantity;
+        this.productCode = productCode;
+        this.productName = productName;
         this.productPrice = productPrice;
     }
 
@@ -47,14 +50,6 @@ public class OrderItem extends BaseModel{
         this.productName = productName;
     }
 
-    public int getProductSize() {
-        return productSize;
-    }
-
-    public void setProductSize(int productSize) {
-        this.productSize = productSize;
-    }
-
     public BigDecimal getProductPrice() {
         return productPrice;
     }
@@ -69,7 +64,6 @@ public class OrderItem extends BaseModel{
                 "quantity=" + quantity +
                 ", productCode='" + productCode + '\'' +
                 ", productName='" + productName + '\'' +
-                ", productSize=" + productSize +
                 ", productPrice=" + productPrice +
                 '}';
     }

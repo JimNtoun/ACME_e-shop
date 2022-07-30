@@ -1,7 +1,9 @@
 package com.acme.eshop.repository;
 
 import com.acme.eshop.exception.NotFoundException;
+import com.acme.eshop.model.Category;
 import com.acme.eshop.model.Customer;
+import com.acme.eshop.model.PaymentMethod;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
@@ -27,7 +29,8 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
             preparedStatement.setString(5, customer.getPhone());
             preparedStatement.setString(6, customer.getAddress());
             preparedStatement.setString(7, customer.getCity());
-
+            preparedStatement.setString(8, String.valueOf(customer.getCategory()));
+            preparedStatement.setString(9, String.valueOf(customer.getPaymentMethod()));
 
             preparedStatement.executeUpdate();
             log.trace("Created customer {}.", customer);
@@ -56,7 +59,8 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
                         .firstName(resultSet.getString("firstName"))
                         .lastName(resultSet.getString("lastName")).email(resultSet.getString("email"))
                         .phone(resultSet.getString("phone")).address(resultSet.getString("address"))
-                        .city(resultSet.getString("city")).build();
+                        .city(resultSet.getString("city")).category(Category.valueOf(resultSet.getString("category")))
+                        .paymentMethod(PaymentMethod.valueOf(resultSet.getString("paymentMethod"))).build();
                 customerList.add(customer);
             }
 
@@ -79,7 +83,8 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
                 return Optional.of(Customer.builder().id(resultSet.getLong("id")).firstName(resultSet.getString("firstName"))
                         .lastName(resultSet.getString("lastName")).email(resultSet.getString("email"))
                         .phone(resultSet.getString("phone")).address(resultSet.getString("address"))
-                        .city(resultSet.getString("city")).build());
+                        .city(resultSet.getString("city")).category(Category.valueOf(resultSet.getString("category")))
+                        .paymentMethod(PaymentMethod.valueOf(resultSet.getString("paymentMethod"))).build());
             } else {
                 return Optional.empty();
             }
@@ -101,6 +106,9 @@ public class CustomerRepository implements CRUDRepository<Customer,Long>{
              preparedStatement.setString(5, customer.getPhone());
              preparedStatement.setString(6,customer.getAddress());
              preparedStatement.setString(7,customer.getCity());
+             preparedStatement.setString(8, String.valueOf(customer.getCategory()));
+             preparedStatement.setString(9, String.valueOf(customer.getPaymentMethod()));
+             
 
              int rowAffected = preparedStatement.executeUpdate();
              log.trace("{} customer with id:{}",rowAffected == 1 ? "Updated" : "Failed to update", customer.getId());

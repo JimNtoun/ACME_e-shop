@@ -3,7 +3,7 @@ package com.acme.eshop.model;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
-public class BaseModel {
+public abstract class BaseModel {
     private Long id;
 
     public BaseModel() {

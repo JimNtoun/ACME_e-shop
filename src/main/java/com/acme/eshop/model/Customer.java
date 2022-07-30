@@ -10,12 +10,12 @@ public class Customer extends BaseModel {
     private String phone;
     private String address;
     private String city;
-    private String category;
-
+    private Category category;
+    private PaymentMethod paymentMethod;
     public Customer() {
     }
 
-    public Customer(String firstName, String lastName, String email, String phone, String address, String city, String category) {
+    public Customer(String firstName, String lastName, String email, String phone, String address, String city, Category category, PaymentMethod paymentMethod) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -23,9 +23,10 @@ public class Customer extends BaseModel {
         this.address = address;
         this.city = city;
         this.category = category;
+        this.paymentMethod = paymentMethod;
     }
 
-    public Customer(Long id, String firstName, String lastName, String email, String phone, String address, String city, String category) {
+    public Customer(Long id, String firstName, String lastName, String email, String phone, String address, String city, Category category, PaymentMethod paymentMethod) {
         super(id);
         this.firstName = firstName;
         this.lastName = lastName;
@@ -34,6 +35,7 @@ public class Customer extends BaseModel {
         this.address = address;
         this.city = city;
         this.category = category;
+        this.paymentMethod = paymentMethod;
     }
 
     public String getFirstName() {
@@ -85,16 +87,20 @@ public class Customer extends BaseModel {
         this.city = city;
     }
 
-    public String getCategory() {
-        if(category == "B2C" || category == "B2B" || category == "B2G"){
-            return category;
-        }else {
-            return "Error: wrong category";
-        }
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     @Override
@@ -102,11 +108,12 @@ public class Customer extends BaseModel {
         return "Customer{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", category=" + category +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
                 ", city='" + city + '\'' +
+                ", category=" + category +
+                ", paymentMethod=" + paymentMethod +
                 '}';
     }
 }

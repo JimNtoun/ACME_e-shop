@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.acme.eshop.model.Category.*;
+import static com.acme.eshop.model.PaymentMethod.credit_card;
 import static java.lang.System.exit;
 
 @Slf4j
@@ -79,12 +81,12 @@ public class ACMEEshopApplication {
     private List<Customer> customerCreation() {
 
         List<Customer> customers = List.of(
-                Customer.builder().firstName("George").lastName("Pappas").email("gdsfsz").phone("fdfxzd").address("fdcfd").city("fdfdf").category("B2C").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2G").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2B").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2C").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2G").build(),
-                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category("B2B").build());
+                Customer.builder().firstName("George").lastName("Pappas").email("gdsfsz").phone("fdfxzd").address("fdcfd").city("fdfdf").category(B2C).paymentMethod(credit_card).build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category(B2G).build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category(B2B).build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category(B2C).build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category(B2G).build(),
+                Customer.builder().firstName("George").lastName("Pappas").email("").phone("").address("").city("").category(B2C).build());
         for (final Customer customer : customers) {
             log.trace("{}", customer);
         }
@@ -135,21 +137,20 @@ public class ACMEEshopApplication {
 
     private List<OrderItem> orderItemCreation() {
         List<OrderItem> orderItems = List.of(
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build(),
-                OrderItem.builder().quantity(1).productCode("").productName("").productSize(1).productPrice(BigDecimal.valueOf(3)).build());
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build(),
+                OrderItem.builder().quantity(1).productCode("").productName("").productPrice(BigDecimal.valueOf(3)).build());
 
         for (final OrderItem orderItem : orderItems) {
             log.trace("{}", orderItem);
@@ -159,20 +160,15 @@ public class ACMEEshopApplication {
 
     private List<Order> orderCreation(List<OrderItem> orderItems) {
         List<Order> orders = List.of(
-                Order.builder().customerFirstName("GGG").customerLastName("GGG").customerEmail("GGG").salespersonFirstName("")
-                        .salespersonLastName("").salespersonEmail("").status("").cost(BigDecimal.valueOf(1500))
+                Order.builder().status("").cost(BigDecimal.valueOf(1500))
                         .orderItems(new ArrayList<>(orderItems.subList(0, 3))).build(),
-                Order.builder().customerFirstName("").customerLastName("").customerEmail("").salespersonFirstName("")
-                        .salespersonLastName("").salespersonEmail("").status("").cost(BigDecimal.valueOf(1500))
+                Order.builder().status("").cost(BigDecimal.valueOf(1500))
                         .orderItems(new ArrayList<>(orderItems.subList(0, 3))).build(),
-                Order.builder().customerFirstName("").customerLastName("").customerEmail("").salespersonFirstName("")
-                        .salespersonLastName("").salespersonEmail("").status("").cost(BigDecimal.valueOf(1500))
+                Order.builder().status("").cost(BigDecimal.valueOf(1500))
                         .orderItems(new ArrayList<>(orderItems.subList(0, 3))).build(),
-                Order.builder().customerFirstName("").customerLastName("").customerEmail("").salespersonFirstName("")
-                        .salespersonLastName("").salespersonEmail("").status("").cost(BigDecimal.valueOf(1500))
+                Order.builder().status("").cost(BigDecimal.valueOf(1500))
                         .orderItems(new ArrayList<>(orderItems.subList(0, 3))).build(),
-                Order.builder().customerFirstName("").customerLastName("").customerEmail("").salespersonFirstName("")
-                        .salespersonLastName("").salespersonEmail("").status("").cost(BigDecimal.valueOf(1500))
+                Order.builder().status("").cost(BigDecimal.valueOf(1500))
                         .orderItems(new ArrayList<>(orderItems.subList(0, 3))).build());
         for (final Order order : orders) {
             log.trace("{}", order);
